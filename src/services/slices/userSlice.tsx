@@ -44,7 +44,7 @@ export interface TUserState {
 }
 
 export const initialState: TUserState = {
-  isAuthChecked: false,
+  isAuthChecked: true,
   user: {
     email: '',
     name: ''
@@ -83,11 +83,10 @@ export const userSlice = createSlice({
         state.error = '';
       })
       .addCase(login.rejected, (state, action) => {
-        state.isAuthChecked = false;
+        state.isAuthChecked = true;
         state.error = action.error.message!;
       })
       .addCase(login.pending, (state) => {
-        state.isAuthChecked = false;
         state.error = '';
       });
     builder
@@ -96,7 +95,7 @@ export const userSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(apiGetUser.rejected, (state, action) => {
-        state.isAuthChecked = false;
+        state.isAuthChecked = true;
         state.error = action.error.message!;
       });
     builder
@@ -105,7 +104,7 @@ export const userSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(updateUser.rejected, (state, action) => {
-        state.isAuthChecked = false;
+        state.isAuthChecked = true;
         state.error = action.error.message!;
       })
       .addCase(updateUser.pending, (state) => {

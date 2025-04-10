@@ -22,9 +22,18 @@ export const ProtectedRoute = ({
     return <Preloader />;
   }
 
-  if ((!onlyUnAuth && !userData) || (onlyUnAuth && userData)) {
-    const redirectTo = onlyUnAuth ? location.state?.from || '/' : '/login';
-    return <Navigate replace to={redirectTo} state={{ from: location }} />;
+  if (onlyUnAuth && userData) {
+    return (
+      <Navigate
+        replace
+        to={location.state?.from || '/'}
+        state={{ from: location }}
+      />
+    );
+  }
+
+  if (!onlyUnAuth && !userData) {
+    return <Navigate replace to='/login' state={{ from: location }} />;
   }
 
   return children;
