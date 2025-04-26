@@ -41,6 +41,7 @@ export interface TUserState {
   isAuthChecked: boolean;
   user: TUser;
   error: string | undefined;
+  loading: boolean;
 }
 
 export const initialState: TUserState = {
@@ -49,7 +50,8 @@ export const initialState: TUserState = {
     email: '',
     name: ''
   },
-  error: ''
+  error: '',
+  loading: false
 };
 
 export const userSlice = createSlice({
@@ -69,51 +71,70 @@ export const userSlice = createSlice({
         state.isAuthChecked = true;
         state.user = action.payload.user;
         state.error = '';
+        state.loading = false;
       })
       .addCase(register.rejected, (state, action) => {
         state.error = action.error.message!;
+        state.loading = false;
       })
       .addCase(register.pending, (state) => {
         state.error = '';
+        state.loading = true;
       });
     builder
       .addCase(login.fulfilled, (state, action) => {
         state.isAuthChecked = true;
         state.user = action.payload.user;
         state.error = '';
+        state.loading = false;
       })
       .addCase(login.rejected, (state, action) => {
         state.isAuthChecked = true;
         state.error = action.error.message!;
+        state.loading = false;
       })
       .addCase(login.pending, (state) => {
         state.error = '';
+        state.loading = true;
       });
     builder
       .addCase(apiGetUser.fulfilled, (state, action) => {
         state.isAuthChecked = true;
         state.user = action.payload.user;
+        state.loading = false;
       })
       .addCase(apiGetUser.rejected, (state, action) => {
         state.isAuthChecked = true;
         state.error = action.error.message!;
+        state.loading = false;
+      })
+      .addCase(apiGetUser.pending, (state) => {
+        state.loading = true;
       });
     builder
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isAuthChecked = true;
         state.user = action.payload.user;
+        state.loading = false;
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isAuthChecked = true;
         state.error = action.error.message!;
+        state.loading = false;
       })
       .addCase(updateUser.pending, (state) => {
         state.error = '';
+        state.loading = true;
       });
-    builder.addCase(logout.fulfilled, (state) => {
-      state.isAuthChecked = false;
-      state.user = { email: '', name: '' };
-    });
+    builder
+      .addCase(logout.fulfilled, (state) => {
+        state.isAuthChecked = false;
+        state.user = { email: '', name: '' };
+        state.loading = false;
+      })
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+      });
   }
 });
 
@@ -124,5 +145,5 @@ export const {
   getError,
   userDataSelector
 } = userSlice.selectors;
-
+export const userReducer = userSlice.reducer;
 export default userSlice;
